@@ -1,0 +1,44 @@
+version: '3'
+services:
+  db:
+    build: db
+    volumes:
+      - db_volume:/var/lib/postgresql/data
+      - ./db/scripts:/docker-entrypoint-initdb.d
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - "5432:5432"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: always
+  doc-server:
+    build: doc-server
+    volumes:
+      - .:/work/src:cached
+      - doc_extensions:/home/user/.vscode-server/extensions
+      - doc_data:/var/data/doc-data
+      - doc_pip_cache:/home/user/.local/lib/python3.11/site-packages
+    ports:
+      - "8080:8080"
+    command: /bin/sh -c "while sleep 1000; do :; done"
+    environment:
+      - TZ=JST-9
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  reverse_proxy:
+    image: nginx
+    volumes:
+      - ./reverse-proxy/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "80:80"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  doc_extensions:
+  doc_data:
+  doc_pip_cache:
+  db_volume:

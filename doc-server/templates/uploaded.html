@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<div>Uploaded</div>
+<table class="table table-sm mb-3 d-block overflow-x-auto">
+  <thead>
+    <tr>
+      <th>File name</th>
+      <th>File type</th>
+      <th>UUID</th>
+      <th>Status</th>
+      <th>Hash</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for file_status in file_statuses %}
+    <tr>
+      <td>{{ file_status.file_name }}</td>
+      <td>{{ file_status.file_type }}</td>
+      <td>{{ file_status.uuid }}</td>
+      <td>{{ file_status.status }}</td>
+      <td>{{ file_status.file_hash }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<a href="" class="btn btn-primary">Back</a>
+
+{% endblock %}

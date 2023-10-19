@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<div>Files</div>
+<table class="table table-sm mb-3 d-block overflow-x-auto text-nowrap">
+  <thead>
+    <tr>
+      <th>File name</th>
+      <th>File type</th>
+      <th>UUID</th>
+      <th>Hash</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for file in files %}
+    <tr>
+      <td>{{ file.file_name }}</td>
+      <td>{{ file.file_type }}</td>
+      <td>{{ file.uuid }}</td>
+      <td>{{ file.file_hash }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<a href="upload" class="btn btn-primary">Upload file</a>
+
+{% endblock %}
