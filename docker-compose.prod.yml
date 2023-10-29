@@ -1,0 +1,40 @@
+version: '3'
+services:
+  db:
+    build: db
+    container_name: vector_store
+    volumes:
+      - db_volume_prod:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - "5432:5432"
+  chat:
+    build:
+      context: chat
+      dockerfile: Dockerfile.prod
+    container_name: chat_service
+    volumes:
+      - chat_cache_prod:/home/user/.cache
+      - chat_data_prod:/var/data/doc-data
+    ports:
+      - "8501:8501"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [ gpu ]
+  reverse_proxy:
+    image: nginx
+    volumes:
+      - ./reverse-proxy/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "80:80"
+
+volumes:
+  db_volume_prod:
+  chat_cache_prod:
+  chat_data_prod:

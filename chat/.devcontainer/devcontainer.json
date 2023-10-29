@@ -1,10 +1,10 @@
 {
-  "name": "Doc Server",
+  "name": "Chat Server",
   "dockerComposeFile": [
-    "../docker-compose.yml"
+    "../../docker-compose.yml"
   ],
-  "service": "doc-server",
-  "workspaceFolder": "/work/src/doc-server",
+  "service": "chat",
+  "workspaceFolder": "/work/src/chat",
   "shutdownAction": "none",
   "customizations": {
     "vscode": {
@@ -27,10 +27,12 @@
             "strings": "off",
             "other": "off"
           },
+          "editor.fontSize": 14,
           "editor.fontFamily": "'UDEV Gothic LG', 'Courier New', monospace"
         },
         "python.analysis.autoImportCompletions": true,
-        "markdown.extension.toc.levels": "2..6"
+        "markdown.extension.toc.levels": "2..6",
+        "markdown-preview-enhanced.automaticallyShowPreviewOfMarkdownBeingEdited": true
       },
       "extensions": [
         "ckolkman.vscode-postgres",

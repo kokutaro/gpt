@@ -1,0 +1,66 @@
+FROM nvidia/cuda:12.2.2-base-ubuntu22.04
+
+USER root
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN set -x \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends \
+  tzdata \
+  locales \
+  fonts-takao-gothic \
+  vim \
+  sudo \
+  less \
+  git \
+  python3-pip \
+  && ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
+
+ARG UID=1000
+ARG USER_NAME=user
+ARG GROUP_ID=1000
+ARG GROUP_NAME=user
+
+ENV LANG ja_JP.UTF-8
+ENV LANGUAGE ja_JP:jp
+ENV LC_ALL ja_JP.UTF-8
+ENV PATH ${PATH}:/home/${USER_NAME}/.local/bin
+ENV FILE_BASE=/var/data/doc-data
+
+RUN set -x \
+  && ln -s /usr/bin/python3.10 /usr/local/bin/python \
+  && locale-gen ja_JP.UTF-8 \
+  && localedef -f UTF-8 -i ja_JP ja_JP \
+  && groupadd --gid ${GROUP_ID} ${GROUP_NAME}
+
+RUN set - x \
+  && echo "$USER_NAME ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/${USER_NAME} \
+  && chmod 0440 /etc/sudoers.d/${USER_NAME} \
+  && useradd \
+  --uid ${UID} \
+  --gid ${GROUP_ID} \
+  --home-dir /home/${USER_NAME} \
+  --create-home \
+  --shell /bin/bash \
+  ${USER_NAME}
+
+USER ${UID}
+
+WORKDIR ${FILE_BASE}
+WORKDIR /work/
+
+RUN set -x \
+  && chown -R ${GROUP_NAME}:${USER_NAME} ${FILE_BASE}
+
+COPY ./requirements.txt .
+
+RUN set -x \
+  && pip install --upgrade pip \
+  && pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+COPY ./.streamlit .
+
+EXPOSE 8501
+
+CMD [ "streamlit", "run", "home.py" ]

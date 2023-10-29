@@ -1,0 +1,55 @@
+{
+  "name": "GPU Server",
+  "dockerComposeFile": [
+    "../../docker-compose.yml"
+  ],
+  "service": "gpu",
+  "workspaceFolder": "/work/src/gpu",
+  "shutdownAction": "none",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "[python]": {
+          "editor.defaultFormatter": "ms-python.black-formatter",
+          "editor.indentSize": "tabSize",
+          "editor.tabSize": 4,
+          "editor.formatOnSave": true
+        },
+        "[markdown]": {
+          "editor.unicodeHighlight.ambiguousCharacters": false,
+          "editor.unicodeHighlight.invisibleCharacters": false,
+          "diffEditor.ignoreTrimWhitespace": false,
+          "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
+          "editor.wordWrap": "on",
+          "editor.quickSuggestions": {
+            "comments": "off",
+            "strings": "off",
+            "other": "off"
+          },
+          "editor.fontFamily": "'UDEV Gothic LG', 'Courier New', monospace"
+        },
+        "python.analysis.autoImportCompletions": true,
+        "markdown.extension.toc.levels": "2..6",
+        "markdown-preview-enhanced.automaticallyShowPreviewOfMarkdownBeingEdited": true
+      },
+      "extensions": [
+        "ckolkman.vscode-postgres",
+        "DavidAnson.vscode-markdownlint",
+        "DotJoshJohnson.xml",
+        "ms-azuretools.vscode-docker",
+        "MS-CEINTL.vscode-language-pack-ja",
+        "ms-python.black-formatter",
+        "ms-python.python",
+        "njpwerner.autodocstring",
+        "redhat.vscode-xml",
+        "ritwickdey.LiveServer",
+        "shd101wyy.markdown-preview-enhanced",
+        "TakumiI.markdowntable",
+        "yzhang.markdown-all-in-one",
+        "wholroyd.jinja",
+        "Zignd.html-css-class-completion"
+      ]
+    }
+  }
+}

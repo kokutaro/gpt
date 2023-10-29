@@ -2,6 +2,7 @@ version: '3'
 services:
   db:
     build: db
+    container_name: vector_store
     volumes:
       - db_volume:/var/lib/postgresql/data
       - ./db/scripts:/docker-entrypoint-initdb.d
@@ -14,13 +15,61 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     restart: always
+  pg_admin:
+    image: dpage/pgadmin4
+    container_name: pg_admin_chat_db
+    depends_on:
+      - db
+    ports:
+      - "11451:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: h_kohara@me.com
+      PGADMIN_DEFAULT_PASSWORD: password
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+  gpu:
+    build: gpu
+    container_name: gpu_host
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: /bin/sh -c "while sleep 1000; do :; done"
+    volumes:
+      - .:/work/src:cached
+      - gpu_extensions:/home/user/.vscode-server/extensions
+      - gpu_pip_cache:/home/user/.local
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [ gpu ]
+  chat:
+    build: chat
+    container_name: chat_service
+    volumes:
+      - .:/work/src:cached
+      - chat_cache:/home/user/.cache
+      - chat_extensions:/home/user/.vscode-server/extensions
+      - chat_pip_cache:/home/user/.local
+      - chat_data:/var/data/doc-data
+    command: /bin/sh -c "while sleep 1000; do :; done"
+    ports:
+      - "8000:8000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [ gpu ]
   doc-server:
     build: doc-server
     volumes:
       - .:/work/src:cached
       - doc_extensions:/home/user/.vscode-server/extensions
       - doc_data:/var/data/doc-data
-      - doc_pip_cache:/home/user/.local/lib/python3.11/site-packages
+      - doc_pip_cache:/home/user/.local
     ports:
       - "8080:8080"
     command: /bin/sh -c "while sleep 1000; do :; done"
@@ -42,3 +91,10 @@ volumes:
   doc_data:
   doc_pip_cache:
   db_volume:
+  chat_cache:
+  chat_extensions:
+  chat_pip_cache:
+  gpu_pip_cache:
+  gpu_extensions:
+  chat_data:
+  pgadmin-data:
